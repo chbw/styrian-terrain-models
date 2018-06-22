@@ -27,6 +27,8 @@ axis("on");
 
 % Select area of interest
 data3 = data2(6200:6700,5500:6200);
+figure(2);clf;
+imshow(data3./max(data3));
 
 % The full resolution may be too high for openscad or (more likely) the slicer.
 % Smooth and downsample the elevation data for further processing by a factor
@@ -36,9 +38,10 @@ kernel = ones(boxwidth,boxwidth);
 kernel = kernel./sum(kernel(:));
 data4 = filter2(kernel,data3,"valid");
 % Scale with the downsampling factor to keep the ratio constant.
-data4 = data4(1:boxwidth:end,1:boxwidth:end)./boxwidth;
+% Flip the y-Axis (from graphics mode to coordinate mode)
+data4 = data4(end:-boxwidth:1,1:boxwidth:end)./boxwidth;
 % Display the surface for inspection.
-figure(2);clf;
+figure(3);clf;
 surf(data4);
 % Export for use with openscad.
 dlmwrite('snippet.surf',data4,' ');
